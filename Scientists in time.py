@@ -64,7 +64,7 @@ while running:
     if keys[pygame.K_RIGHT]:
         rect_x += rect_speed
 
-    if keys[pygame.K_UP] :
+    if keys[pygame.K_UP] and not jumping :
         jumping = True
         b_velocity = jump
         
