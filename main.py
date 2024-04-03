@@ -1,5 +1,6 @@
 import pygame
 import sys
+from player import *
 
 pygame.init()
 
@@ -20,16 +21,16 @@ ground_height = 50
 
 # Rectangle properties
 rect_width, rect_height = 50, 50
-rect_x, rect_y = 0, 750
-rect_a, rect_b = WIDTH //3 - rect_width // 2, HEIGHT // 3 - rect_height // 2
-rect_speed = 5
+x, y = 0, 750 #pos P1
+rect_a, rect_b = WIDTH //3 - rect_width // 2, HEIGHT // 3 - rect_height // 2 #pos P2
+speed = 5
 
 #jump
 jumping = False
-b_gravity = 1
+gravity = 1
 fall_gravity = 10
-jump = 25
-b_velocity = jump
+jump_height = 25
+velocity = jump_height
 
 # Platform properties
 platform_width, platform_height = 200, 10
@@ -47,6 +48,8 @@ def collision_platform(rect1_x, rect1_y, rect1_width, rect1_height, rect2_x, rec
     else:
         return False
 
+cat = Cat(speed, x, y,velocity, jump_height, gravity)
+
 while running:
     screen.fill(WHITE)
 
@@ -58,42 +61,27 @@ while running:
     # Get the state of all keyboard keys
     keys = pygame.key.get_pressed()
 
-    # left, right, jump, down (P1)
-    if keys[pygame.K_LEFT]:
-        rect_x -= rect_speed
-    if keys[pygame.K_RIGHT]:
-        rect_x += rect_speed
 
-    if keys[pygame.K_UP] and not jumping :
-        jumping = True
-        b_velocity = jump
-        
-    if jumping:
-        rect_y-=b_velocity
-        b_velocity-=b_gravity
-        if b_velocity<- jump:
-            jumping = False
-
-    if keys[pygame.K_DOWN]:
-        rect_y += rect_speed
-
+    #movment P1
+    cat.mov(keys)
+    
     #P1
-    pygame.draw.rect(screen, BLACK, (rect_x, rect_y, rect_width, rect_height))
+    pygame.draw.rect(screen, BLACK, (cat.x, cat.y, rect_width, rect_height))
 
     # Fall if not on platform
-    if not collision_platform(rect_x, rect_y, rect_width, rect_height, platform_x, platform_y, platform_width,
-                              platform_height) and rect_y + rect_height < HEIGHT - ground_height:
-        rect_y += fall_gravity
+    if not collision_platform(cat.x, cat.y, rect_width, rect_height, platform_x, platform_y, platform_width,
+                              platform_height) and cat.y + rect_height < HEIGHT - ground_height:
+        cat.y += fall_gravity
 
     #zqsd (P2)
     if keys[pygame.K_q]:
-        rect_a -= rect_speed
+        rect_a -= speed
     if keys[pygame.K_d]:
-        rect_a += rect_speed
+        rect_a += speed
     if keys[pygame.K_z]:
-        rect_b -= rect_speed
+        rect_b -= speed
     if keys[pygame.K_s]:
-        rect_b += rect_speed
+        rect_b += speed
 
     #P2
     pygame.draw.rect(screen, BLUE, (rect_a, rect_b, rect_width, rect_height))
@@ -103,18 +91,18 @@ while running:
     pygame.draw.rect(screen, GRAY, (0, HEIGHT - ground_height, WIDTH, ground_height))
 
     # Collision with ground 
-    if rect_y + rect_height >= HEIGHT - ground_height:
-        rect_y = HEIGHT - ground_height - rect_height
-        jumping = False
+    if cat.y + rect_height >= HEIGHT - ground_height:
+        cat.y = HEIGHT - ground_height - rect_height
+        cat.jumping = False
 
     if rect_b + rect_height >= HEIGHT - ground_height:
         rect_b = HEIGHT - ground_height - rect_height
 
     pygame.draw.rect(screen, BLACK, (platform_x, platform_y, platform_width, platform_height))
     
-    if collision_platform(rect_x, rect_y, rect_width, rect_height, platform_x, platform_y, platform_width, platform_height):
-        rect_y = platform_y - rect_height
-        jumping = False
+    if collision_platform(cat.x, cat.y, rect_width, rect_height, platform_x, platform_y, platform_width, platform_height):
+        cat.y = platform_y - rect_height
+        cat.jumping = False
 
 
     # Update the display
