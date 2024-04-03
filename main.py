@@ -129,9 +129,9 @@ while running:
 
 
     #actualiser la barre de vie du joueur 
-    bar.update_pos(rect_x, rect_y)
+    bar.update_pos(cat.x, cat.y)
     bar.update_health_bar(screen)
-    
+
     # Update the display
     pygame.display.flip()
 
