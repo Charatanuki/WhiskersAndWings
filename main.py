@@ -22,7 +22,7 @@ ground_height = 50
 # Rectangle properties
 rect_width, rect_height = 50, 50
 x, y = 0, 750 #pos P1
-rect_a, rect_b = WIDTH //3 - rect_width // 2, HEIGHT // 3 - rect_height // 2 #pos P2
+a, b = 0, 200 #pos P2
 speed = 5
 
 #jump
@@ -49,6 +49,7 @@ def collision_platform(rect1_x, rect1_y, rect1_width, rect1_height, rect2_x, rec
         return False
 
 cat = Cat(speed, x, y,velocity, jump_height, gravity)
+bird = Bird(speed, a, b)
 
 while running:
     screen.fill(WHITE)
@@ -74,17 +75,10 @@ while running:
         cat.y += fall_gravity
 
     #zqsd (P2)
-    if keys[pygame.K_q]:
-        rect_a -= speed
-    if keys[pygame.K_d]:
-        rect_a += speed
-    if keys[pygame.K_z]:
-        rect_b -= speed
-    if keys[pygame.K_s]:
-        rect_b += speed
+    bird.mov(keys)
 
     #P2
-    pygame.draw.rect(screen, BLUE, (rect_a, rect_b, rect_width, rect_height))
+    pygame.draw.rect(screen, BLUE, (bird.a, bird.b, rect_width, rect_height))
 
 
     # Drawing ground
@@ -95,8 +89,8 @@ while running:
         cat.y = HEIGHT - ground_height - rect_height
         cat.jumping = False
 
-    if rect_b + rect_height >= HEIGHT - ground_height:
-        rect_b = HEIGHT - ground_height - rect_height
+    if bird.b + rect_height >= HEIGHT - ground_height:
+        bird.b = HEIGHT - ground_height - rect_height
 
     pygame.draw.rect(screen, BLACK, (platform_x, platform_y, platform_width, platform_height))
     

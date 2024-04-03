@@ -27,13 +27,19 @@ class Cat:
             self.jumping = False
 
         if keys[pygame.K_DOWN]:
-            self.y += self.speed
-
-        
-        
+            self.y += self.speed    
         
 class Bird:
     def __init__(self, speed, a,b):
         self.speed = speed
         self.a = a 
         self.b = b
+    def mov(self, keys):
+        if keys[pygame.K_q]:
+            self.a -= self.speed
+        if keys[pygame.K_d]:
+            self.a += self.speed
+        if keys[pygame.K_z]:
+            self.b -= self.speed
+        if keys[pygame.K_s]:
+            self.b += self.speed
