@@ -7,7 +7,7 @@ pygame.init()
 # Set up the screen
 WIDTH, HEIGHT = 800, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Scientists in time")
+pygame.display.set_caption("Whiskers & Wings : The Time Odyssey")
 
 # Colors
 WHITE = (255, 255, 255)
