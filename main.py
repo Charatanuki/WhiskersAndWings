@@ -43,25 +43,29 @@ def collision_platform(rect1_x, rect1_y, rect1_width, rect1_height, rect2_x, rec
     if (rect1_x < rect2_x + rect2_width and
         rect1_x + rect1_width > rect2_x and
         rect1_y < rect2_y + rect2_height and
-        rect1_y + rect1_height > rect2_y):
+        rect1_y + rect1_height > rect2_y): 
         return True
     else:
         return False
 
 
 class health_bar:
-    def __init__(self, x, y):
+    def __init__(self, x, y, a, b):
         self.x = x 
         self.y = y 
+        self.a = a 
+        self.b = b 
         self.health = 100
         self.max_health = 100 
         self.attack = 10 
 
-    def update_pos(self, x, y):
+    def update_pos(self, x, y, a, b):
         self.x = x + self.max_health/4
-        self.y = y - self.max_health/4
+        self.y = y - self.max_health/4 
+        self.a = a + self.max_health/4
+        self.b = b - self.max_health/4
 
-    #barre de vie joueur
+    #barre de vie joueur (cat)
     def update_health_bar(self, surface): 
         # bar_color = (111, 210, 46) #couleur pour la jauge de vie
         # back_bar_color= (60, 63, 60) #arrière plan de la jauge de vie 
@@ -69,11 +73,18 @@ class health_bar:
         #position de l'arrière plan de la jauge de vie 
         # back_bar_position =[self.rect.x +10 ,self.rect.y -20, self.max_health, 5]
 
-        #dessiner la barre de vie
-        pygame.draw.rect(surface, (60, 63, 60), [self.x-self.max_health/2, self.y, self.max_health, 5])
-        pygame.draw.rect(surface, (111, 210, 46), [self.x-self.max_health/2, self.y, self.health, 5])
+        #dessiner la barre de vie (cat)
+        pygame.draw.rect(surface, (60, 63, 60), [620, 20, self.max_health, 5])
+        pygame.draw.rect(surface, (111, 210, 46), [620, 20, self.health, 5])
 
-bar = health_bar(WIDTH//2, HEIGHT//2)
+        # bird
+        pygame.draw.rect(surface, (60, 63, 60), [100, 20, self.max_health, 5])
+        pygame.draw.rect(surface, (111, 210, 46), [100, 20, self.health, 5])
+
+
+
+bar = health_bar(x, y, a, b)
+
 
 
 
@@ -129,7 +140,8 @@ while running:
 
 
     #actualiser la barre de vie du joueur 
-    bar.update_pos(cat.x, cat.y)
+    bar.update_pos(cat.x, cat.y, bird.a, bird.b)
+    # bar.update_pos2(bird.a, bird.b)
     bar.update_health_bar(screen)
 
     # Update the display
