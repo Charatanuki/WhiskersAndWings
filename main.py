@@ -22,24 +22,25 @@ ground_height = 50
 
 # Rectangle properties
 rect_width, rect_height = 25,25 
-x, y = 0, 750 #pos P1
-a, b = 600, 750 #pos P2
+x, y = 100, 1000 #pos P1
+a, b = 1700, 950 #pos P2
 speed = 5
 
 #jump
 jumping = False
 gravity = 1
 fall_gravity = 10
-jump_height = 25
+jump_height = 22
 velocity = jump_height
 
 # Platform properties
 """platform_width, platform_height = 200, 10
 platform_x, platform_y = WIDTH // 4, HEIGHT // 2 + HEIGHT // 4"""
 
-platform = [Platform(100, 950, 200, 10),
-            Platform(400, 900, 20, 100),
-            Platform(200, 800, 100, 10),]
+platform = [Platform(300, 975, 100, 10), #cat side
+            Platform(140, 900, 100, 10),
+            Platform(400, 860, 15, 300), #vertical
+            Platform(350, 860, 250, 10),]
 
 # Main game loop
 running = True
