@@ -92,6 +92,10 @@ bar = health_bar(x, y, a, b)
 cat = Cat(speed, x, y,velocity, jump_height, gravity)
 bird = Bird(speed, a, b)
 
+
+frame = 0 #last_update at index 0 of the list
+last_update = pygame.time.get_ticks() #animation in ms
+
 while running:
     screen.fill(WHITE)
 
@@ -109,16 +113,15 @@ while running:
     #P1
     pygame.draw.rect(screen, BLACK, (cat.x, cat.y, rect_width, rect_height))    
     
-    # Dessiner toutes les plateformes
+    # Drawing all platform
     for platfrm in platform:
         platfrm.draw(screen)
 
-# Fall if not on platform
+    # Fall if not on platform
         if collision_platform(cat.x, cat.y, rect_width, rect_height, platfrm.c, platfrm.d, platfrm.width, platfrm.height):
             cat.y = platfrm.d - rect_height
             cat.jumping = False
         
-
     if cat.y + rect_height < HEIGHT - ground_height:
         cat.y += fall_gravity
 
@@ -126,7 +129,17 @@ while running:
     bird.mov(keys)
 
     #P2
-    pygame.draw.rect(screen, BLUE, (bird.a, bird.b, rect_width, rect_height))
+    current_time = pygame.time.get_ticks()
+    elapsed_time = current_time - last_update
+    animation_speed = 150
+
+    if elapsed_time >= animation_speed:
+        #next frame
+        frame = (frame + 1) % len(bird.img) #%len permet de ne pas dépasser la taille donc de tourner en boucle
+        #Update the time
+        last_update = current_time
+    
+    screen.blit(bird.img[frame], (bird.a, bird.b, rect_width, rect_height))
 
     # Drawing ground
     pygame.draw.rect(screen, GRAY, (0, HEIGHT - ground_height, WIDTH, ground_height))
@@ -136,12 +149,9 @@ while running:
         cat.y = HEIGHT - ground_height - rect_height
         cat.jumping = False
 
-    if bird.b + rect_height >= HEIGHT - ground_height:
-        bird.b = HEIGHT - ground_height - rect_height
-
-    """pygame.draw.rect(screen, BLACK, (platform_x, platform_y, platform_width, platform_height))
-    pygame.draw.rect(screen, BLACK, (platform_x, platform_y, platform_width, platform_height))"""
-    
+    if bird.b + bird.img[0].get_height() - 17 >= HEIGHT - ground_height:
+        bird.b = HEIGHT - ground_height - bird.img[0].get_height() + 17
+   
     #actualiser la barre de vie du joueur 
     bar.update_pos(cat.x, cat.y, bird.a, bird.b)
     # bar.update_pos2(bird.a, bird.b)

@@ -34,10 +34,25 @@ class Bird:
         self.speed = speed
         self.a = a 
         self.b = b
+        self.img = [pygame.image.load("./characters/bird1_frame1.png"),
+                    pygame.image.load("./characters/bird1_frame2.png"),
+                    pygame.image.load("./characters/bird1_frame3.png"),
+                    pygame.image.load("./characters/bird1_frame2.png"),]
+        self.is_facing_left = True
+    def pos(self):
+        for pos in range(len(self.img)):
+            self.img[pos] = pygame.transform.flip(self.img[pos],True,False)
+
     def mov(self, keys):
         if keys[pygame.K_q]:
+            if not self.is_facing_left:
+                self.is_facing_left=True
+                self.pos()
             self.a -= self.speed
         if keys[pygame.K_d]:
+            if self.is_facing_left:
+                self.is_facing_left=False
+                self.pos()
             self.a += self.speed
         if keys[pygame.K_z]:
             self.b -= self.speed
