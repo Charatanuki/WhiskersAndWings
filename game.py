@@ -18,9 +18,9 @@ class Game:
         pygame.init()
 
         pygame.display.set_caption('Game')
-        self.screen = pygame.display.set_mode((640, 480))
-        self.display = pygame.Surface((320, 240), pygame.SRCALPHA)
-        self.display_2 = pygame.Surface((320, 240))
+        self.screen = pygame.display.set_mode((1920, 1080))
+        self.display = pygame.Surface((1280, 720), pygame.SRCALPHA)
+        self.display_2 = pygame.Surface((1280, 720))
 
         self.clock = pygame.time.Clock()
 
@@ -29,9 +29,9 @@ class Game:
 
         self.assets = {
             'decor': load_images('tiles/decor'),
-            'grass': load_images('tiles/grass'),
+            'egypt_wood': load_images('tiles/egypt_wood'),
             'large_decor': load_images('tiles/large_decor'),
-            'stone': load_images('tiles/stone'),
+            'brick': load_images('tiles/brick'),
             'player': load_image('entities/player.png'),
             'background': load_image('background.png'),
             'clouds': load_images('clouds'),
@@ -40,13 +40,8 @@ class Game:
             'player/idle': Animation(load_images('entities/player/idle'), img_dur=6),
             'player/run': Animation(load_images('entities/player/run'), img_dur=4),
             'player/jump': Animation(load_images('entities/player/jump')),
-            'player/slide': Animation(load_images('entities/player/slide')),
             'player/wall_slide': Animation(load_images('entities/player/wall_slide')),
             'player2/idle': Animation(load_images('entities/player2/idle'), img_dur=6),
-            'player2/run': Animation(load_images('entities/player2/run'), img_dur=4),
-            'player2/jump': Animation(load_images('entities/player2/jump')),
-            'player2/slide': Animation(load_images('entities/player2/slide')),
-            'player2/wall_slide': Animation(load_images('entities/player2/wall_slide')),
             'particle/leaf': Animation(load_images('particles/leaf'), img_dur=20, loop=False),
             'particle/particle': Animation(load_images('particles/particle'), img_dur=6, loop=False),
             'gun': load_image('gun.png'),
@@ -69,11 +64,11 @@ class Game:
 
         self.clouds = Clouds(self.assets['clouds'], count=16)
 
-        self.player = Player(self, (50, 50), (8, 15))
+        self.player = Player(self, (50, 50), (35, 35))
 
-        self.bird = Bird(self, (50, 50), (8, 15))
+        self.bird = Bird(self, (0, 0), (40, 35))
 
-        self.tilemap = Tilemap(self, tile_size=16)
+        self.tilemap = Tilemap(self, tile_size=64)
 
         self.layout = True
 
@@ -93,7 +88,7 @@ class Game:
         for spawner in self.tilemap.extract([('spawners', 0), ('spawners', 1)]):
             if spawner['variant'] == 0:
                 self.player.pos = spawner['pos'].copy()
-                self.bird.pos = spawner['pos'].copy()
+                #self.bird.pos = spawner['pos'].copy()
                 self.player.air_time = 0
             else:
                 self.enemies.append(Enemy(self, spawner['pos'], (8, 15)))
@@ -117,11 +112,11 @@ class Game:
 
         while True:
             self.display.fill((0, 0, 0, 0))
-            self.display_2.blit(self.assets['background'], (0, 0))
+            self.display_2.fill((0, 140, 233))
 
             self.screenshake = max(0, self.screenshake - 1)
 
-            if not len(self.enemies):
+            if len(self.enemies):
                 self.transition += 1
                 if self.transition > 30:
                     self.level = min(self.level + 1, len(os.listdir('data/maps')) - 1)

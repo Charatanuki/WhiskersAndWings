@@ -20,15 +20,15 @@ class Editor:
 
         self.assets = {
             'decor': load_images('tiles/decor'),
-            'grass': load_images('tiles/grass'),
+            'egypt_wood': load_images('tiles/egypt_wood'),
             'large_decor': load_images('tiles/large_decor'),
-            'stone': load_images('tiles/stone'),
+            'brick': load_images('tiles/brick'),
             'spawners': load_images('tiles/spawners'),
         }
 
         self.movement = [False, False, False, False]
 
-        self.tilemap = Tilemap(self, tile_size=16)
+        self.tilemap = Tilemap(self, tile_size=64)
 
         try:
             self.tilemap.load('map.json')

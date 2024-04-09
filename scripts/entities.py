@@ -221,8 +221,8 @@ class Player(PhysicsEntity):
             self.velocity[0] = min(self.velocity[0] + 0.1, 0)
 
     def render(self, surf, offset=(0, 0)):
-        if abs(self.dashing) <= 50:
-            super().render(surf, offset=offset)
+
+        super().render(surf, offset=offset)
 
     def jump(self):
         if self.wall_slide:
