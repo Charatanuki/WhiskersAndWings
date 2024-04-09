@@ -5,7 +5,7 @@ import pygame
 from scripts.utils import load_images
 from scripts.tilemap import Tilemap
 
-RENDER_SCALE = 2.0
+RENDER_SCALE = 1.0
 
 
 class Editor:
@@ -14,7 +14,7 @@ class Editor:
 
         pygame.display.set_caption('Editor')
         self.screen = pygame.display.set_mode((1920, 1080))
-        self.display = pygame.Surface((1280, 720))
+        self.display = pygame.Surface((1920, 1080))
 
         self.clock = pygame.time.Clock()
 

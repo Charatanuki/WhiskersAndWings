@@ -19,8 +19,8 @@ class Game:
 
         pygame.display.set_caption('Game')
         self.screen = pygame.display.set_mode((1920, 1080))
-        self.display = pygame.Surface((1280, 720), pygame.SRCALPHA)
-        self.display_2 = pygame.Surface((1280, 720))
+        self.display = pygame.Surface((1920, 1080), pygame.SRCALPHA)
+        self.display_2 = pygame.Surface((1920, 1080))
 
         self.clock = pygame.time.Clock()
 
@@ -90,8 +90,9 @@ class Game:
         for spawner in self.tilemap.extract([('spawners', 0), ('spawners', 1)]):
             if spawner['variant'] == 0:
                 self.player.pos = spawner['pos'].copy()
-                #self.bird.pos = spawner['pos'].copy()
                 self.player.air_time = 0
+            elif spawner['variant'] == 1:
+                self.bird.pos = spawner['pos'].copy()
             else:
                 self.enemies.append(Enemy(self, spawner['pos'], (8, 15)))
 
@@ -135,7 +136,7 @@ class Game:
 
             self.scroll[0] += (self.player.rect().centerx - self.display.get_width() / 2 - self.scroll[0]) / 30
             self.scroll[1] += (self.player.rect().centery - self.display.get_width() / 2 - self.scroll[1]) / 30
-            render_scroll = (int(self.scroll[0]), int(self.scroll[1]))
+            render_scroll = (0, 0) #(int(self.scroll[0]), int(self.scroll[1]))
 
             for rect in self.leaf_spawners:
                 if random.random() * 49999 < rect.width * rect.height:
