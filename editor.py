@@ -26,6 +26,7 @@ class Editor:
             'large_decor': load_images('tiles/large_decor'),
             'brick': load_images('tiles/brick'),
             'spawners': load_images('tiles/spawners'),
+            'traps': load_images('tiles/traps'),
         }
 
         self.movement = [False, False, False, False]

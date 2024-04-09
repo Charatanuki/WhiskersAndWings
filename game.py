@@ -34,6 +34,7 @@ class Game:
             'egypt_border': load_images('tiles/egypt_border'),
             'brick': load_images('tiles/brick'),
             'stone_border': load_images('tiles/stone_border'),
+            'traps': load_images('tiles/traps'),
             'player': load_image('entities/player.png'),
             'background': load_image('background.png'),
             'clouds': load_images('clouds'),
@@ -66,9 +67,9 @@ class Game:
 
         self.clouds = Clouds(self.assets['clouds'], count=16)
 
-        self.player = Player(self, (50, 50), (35, 35))
+        self.player = Player(self, (200, 1000), (35, 35))
 
-        self.bird = Bird(self, (0, 0), (40, 35))
+        self.bird = Bird(self, (1800, 950), (40, 35))
 
         self.tilemap = Tilemap(self, tile_size=64)
 
