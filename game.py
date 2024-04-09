@@ -29,9 +29,11 @@ class Game:
 
         self.assets = {
             'decor': load_images('tiles/decor'),
-            'egypt_wood': load_images('tiles/egypt_wood'),
             'large_decor': load_images('tiles/large_decor'),
+            'egypt_wood': load_images('tiles/egypt_wood'),
+            'egypt_border': load_images('tiles/egypt_border'),
             'brick': load_images('tiles/brick'),
+            'stone_border': load_images('tiles/stone_border'),
             'player': load_image('entities/player.png'),
             'background': load_image('background.png'),
             'clouds': load_images('clouds'),

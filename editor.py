@@ -13,14 +13,16 @@ class Editor:
         pygame.init()
 
         pygame.display.set_caption('Editor')
-        self.screen = pygame.display.set_mode((640, 480))
-        self.display = pygame.Surface((320, 240))
+        self.screen = pygame.display.set_mode((1920, 1080))
+        self.display = pygame.Surface((1280, 720))
 
         self.clock = pygame.time.Clock()
 
         self.assets = {
             'decor': load_images('tiles/decor'),
             'egypt_wood': load_images('tiles/egypt_wood'),
+            'egypt_border': load_images('tiles/egypt_border'),
+            'stone_border': load_images('tiles/stone_border'),
             'large_decor': load_images('tiles/large_decor'),
             'brick': load_images('tiles/brick'),
             'spawners': load_images('tiles/spawners'),
