@@ -30,6 +30,7 @@ NEIGHBOR_OFFSETS = [(-1, 0), (-1, -1), (0, -1), (1, 1), (1, -1), (1, 0), (0, 0),
 PHYSICS_TILES = {'egypt_wood', 'brick', 'stone_border', 'egypt_border'}
 DEATH_TILES = {'traps'}
 CHEST_TILES = {'chest'}
+KEY_TILES = {'key'}
 AUTOTILE_TYPES = {'egypt_wood'}
 AUTOTILE_BORDERS = {'stone_border', 'egypt_border'}
 
@@ -102,6 +103,15 @@ class Tilemap:
         rects = []
         for tile in self.tiles_around(pos):
             if tile['type'] in CHEST_TILES:
+                rects.append(
+                    pygame.Rect(tile['pos'][0] * self.tile_size, tile['pos'][1] * self.tile_size, self.tile_size,
+                                self.tile_size))
+        return rects
+
+    def key_rects_around(self, pos):
+        rects = []
+        for tile in self.tiles_around(pos):
+            if tile['type'] in KEY_TILES:
                 rects.append(
                     pygame.Rect(tile['pos'][0] * self.tile_size, tile['pos'][1] * self.tile_size, self.tile_size,
                                 self.tile_size))

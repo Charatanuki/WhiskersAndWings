@@ -44,6 +44,8 @@ class PhysicsEntity:
             if rect.colliderect(entity_rect):
                 self.game.chest = 1
                 tilemap.chest_state(self.pos)
+        for rect in tilemap.key_rects_around(self.pos):
+            pass
 
         entity_rect = self.rect()
         for rect in tilemap.physics_rects_around(self.pos):
