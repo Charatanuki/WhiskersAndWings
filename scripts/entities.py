@@ -38,6 +38,13 @@ class PhysicsEntity:
         frame_movement = ((movement[0] + self.velocity[0]) * speed[0], (movement[1] + self.velocity[1]) * speed[1])
 
         self.pos[0] += frame_movement[0]
+
+        entity_rect = self.rect()
+        for rect in tilemap.chest_rects_around(self.pos):
+            if rect.colliderect(entity_rect):
+                self.game.chest = 1
+                tilemap.chest_state(self.pos)
+
         entity_rect = self.rect()
         for rect in tilemap.physics_rects_around(self.pos):
             if entity_rect.colliderect(rect):

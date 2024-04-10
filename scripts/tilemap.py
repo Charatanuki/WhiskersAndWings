@@ -29,6 +29,7 @@ AUTOTILE_MAP_BORDER = {
 NEIGHBOR_OFFSETS = [(-1, 0), (-1, -1), (0, -1), (1, 1), (1, -1), (1, 0), (0, 0), (-1, 1), (0, 1), (1, 1)]
 PHYSICS_TILES = {'egypt_wood', 'brick', 'stone_border', 'egypt_border'}
 DEATH_TILES = {'traps'}
+CHEST_TILES = {'chest'}
 AUTOTILE_TYPES = {'egypt_wood'}
 AUTOTILE_BORDERS = {'stone_border', 'egypt_border'}
 
@@ -96,6 +97,21 @@ class Tilemap:
                     pygame.Rect(tile['pos'][0] * self.tile_size, tile['pos'][1] * self.tile_size, self.tile_size,
                                 self.tile_size))
         return rects
+
+    def chest_rects_around(self, pos):
+        rects = []
+        for tile in self.tiles_around(pos):
+            if tile['type'] in CHEST_TILES:
+                rects.append(
+                    pygame.Rect(tile['pos'][0] * self.tile_size, tile['pos'][1] * self.tile_size, self.tile_size,
+                                self.tile_size))
+        return rects
+
+    def chest_state(self, pos):
+        if self.game.chest:
+            for tile in self.tiles_around(pos):
+                if tile['type'] in CHEST_TILES:
+                    tile['variant'] = 1
 
     def death_rects_around(self, pos):
         rects = []

@@ -114,6 +114,7 @@ class Game:
         self.projectiles = []
         self.particles = []
         self.sparks = []
+        self.chest = 0
 
         self.scroll = [0, 0]
         self.dead = 0
