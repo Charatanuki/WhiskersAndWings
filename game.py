@@ -29,14 +29,21 @@ class Game:
 
         self.assets = {
             'decor': load_images('tiles/decor'),
-            'large_decor': load_images('tiles/large_decor'),
             'egypt_wood': load_images('tiles/egypt_wood'),
             'egypt_border': load_images('tiles/egypt_border'),
             'brick': load_images('tiles/brick'),
             'stone_border': load_images('tiles/stone_border'),
             'traps': load_images('tiles/traps'),
+            'barrier': load_images('tiles/barrier'),
+            'platform': load_images('tiles/platforms'),
+            'button': load_images('tiles/buttons'),
+            'lever': load_images('tiles/levers'),
+            'chest': load_images('tiles/chest'),
+            'door': load_images('tiles/doors'),
+            'key': load_images('tiles/key'),
+            'arrow_spawner': load_images('tiles/arrow_spawner'),
+            'arrow': load_images('tiles/arrows'),
             'player': load_image('entities/player.png'),
-            'background': load_image('background.png'),
             'clouds': load_images('clouds'),
             'enemy/idle': Animation(load_images('entities/enemy/idle'), img_dur=6),
             'enemy/run': Animation(load_images('entities/enemy/run'), img_dur=4),
@@ -45,7 +52,6 @@ class Game:
             'player/jump': Animation(load_images('entities/player/jump')),
             'player/wall_slide': Animation(load_images('entities/player/wall_slide')),
             'player2/idle': Animation(load_images('entities/player2/idle'), img_dur=6),
-            'particle/leaf': Animation(load_images('particles/leaf'), img_dur=20, loop=False),
             'particle/particle': Animation(load_images('particles/particle'), img_dur=6, loop=False),
             'gun': load_image('gun.png'),
             'projectile': load_image('projectile.png'),
@@ -103,6 +109,7 @@ class Game:
         pygame.mixer.music.play(-1)
 
         self.player.death = False
+        self.bird.death = False
 
         self.projectiles = []
         self.particles = []
@@ -130,7 +137,7 @@ class Game:
             if self.transition < 0:
                 self.transition += 1
 
-            if self.player.death and not self.dead:
+            if (self.player.death or self.bird.death) and not self.dead:
                 self.dead = 1
 
             if self.dead:
