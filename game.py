@@ -45,6 +45,7 @@ class Game:
             'arrow': load_images('tiles/arrows'),
             'player': load_image('entities/player.png'),
             'clouds': load_images('clouds'),
+            'torch': load_images('tiles/torch'),
             'enemy/idle': Animation(load_images('entities/enemy/idle'), img_dur=6),
             'enemy/run': Animation(load_images('entities/enemy/run'), img_dur=4),
             'player/idle': Animation(load_images('entities/player/idle'), img_dur=6),
