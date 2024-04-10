@@ -15,6 +15,7 @@ class PhysicsEntity:
         self.size = size
         self.velocity = [0, 0]
         self.collisions = {'up': False, 'down': False, 'left': False, 'right': False}
+        self.death = False
 
         self.action = ''
         self.anim_offset = (-3, -3)
@@ -31,10 +32,10 @@ class PhysicsEntity:
             self.action = action
             self.animation = self.game.assets[self.type + '/' + self.action].copy()
 
-    def update(self, tilemap, movement=(0, 0)):
+    def update(self, tilemap, movement=(0, 0), speed=(1, 1)):
         self.collisions = {'up': False, 'down': False, 'left': False, 'right': False}
 
-        frame_movement = (movement[0] + self.velocity[0], movement[1] + self.velocity[1])
+        frame_movement = ((movement[0] + self.velocity[0]) * speed[0], (movement[1] + self.velocity[1]) * speed[1])
 
         self.pos[0] += frame_movement[0]
         entity_rect = self.rect()
@@ -49,6 +50,13 @@ class PhysicsEntity:
                 self.pos[0] = entity_rect.x
 
         self.pos[1] += frame_movement[1]
+
+        entity_rect = self.rect()
+        for rect in tilemap.death_rects_around(self.pos):
+            if entity_rect.colliderect(rect):
+                if frame_movement[1] != 0:
+                    self.death = True
+
         entity_rect = self.rect()
         for rect in tilemap.physics_rects_around(self.pos):
             if entity_rect.colliderect(rect):
@@ -162,8 +170,8 @@ class Player(PhysicsEntity):
         self.wall_slide = False
         self.dashing = 0
 
-    def update(self, tilemap, movement=(0, 0)):
-        super().update(tilemap, movement=movement)
+    def update(self, tilemap, movement=(0, 0), speed=(1, 1)):
+        super().update(tilemap, movement=movement, speed=speed)
 
         self.air_time += 1
 
@@ -258,8 +266,8 @@ class Bird(PhysicsEntity):
     def __init__(self, game, pos, size):
         super().__init__(game, 'player2', pos, size)
 
-    def update(self, tilemap, movement=(0, 0)):
-        super().update(tilemap, movement=movement)
+    def update(self, tilemap, movement=(0, 0), speed=(1, 1)):
+        super().update(tilemap, movement=movement, speed=speed)
 
         if self.velocity[0] > 0:
             self.velocity[0] = max(self.velocity[0] - 0.1, 0)

@@ -102,6 +102,8 @@ class Game:
         pygame.mixer.music.set_volume(0.5)
         pygame.mixer.music.play(-1)
 
+        self.player.death = False
+
         self.projectiles = []
         self.particles = []
         self.sparks = []
@@ -128,6 +130,9 @@ class Game:
             if self.transition < 0:
                 self.transition += 1
 
+            if self.player.death and not self.dead:
+                self.dead = 1
+
             if self.dead:
                 self.dead += 1
                 if self.dead >= 10:
@@ -137,7 +142,7 @@ class Game:
 
             self.scroll[0] += (self.player.rect().centerx - self.display.get_width() / 2 - self.scroll[0]) / 30
             self.scroll[1] += (self.player.rect().centery - self.display.get_width() / 2 - self.scroll[1]) / 30
-            render_scroll = (0, 0) #(int(self.scroll[0]), int(self.scroll[1]))
+            render_scroll = (0, 0)  # (int(self.scroll[0]), int(self.scroll[1]))
 
             for rect in self.leaf_spawners:
                 if random.random() * 49999 < rect.width * rect.height:
@@ -157,10 +162,10 @@ class Game:
                     self.enemies.remove(enemy)
 
             if not self.dead:
-                self.player.update(self.tilemap, (self.movement[1] - self.movement[0], 0))
+                self.player.update(self.tilemap, (self.movement[1] - self.movement[0], 0), (3, 2))
                 self.player.render(self.display, offset=render_scroll)
                 self.bird.update(self.tilemap, (self.movement_bird[1] - self.movement_bird[0],
-                                                self.movement_bird[3] - self.movement_bird[2]))
+                                                self.movement_bird[3] - self.movement_bird[2]), (3, 3))
                 self.bird.render(self.display, offset=render_scroll)
 
             for projectile in self.projectiles.copy():
