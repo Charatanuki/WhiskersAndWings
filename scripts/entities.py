@@ -61,7 +61,7 @@ class PhysicsEntity:
         entity_rect = self.rect()
         for rect in tilemap.death_rects_around(self.pos):
             if entity_rect.colliderect(rect):
-                if frame_movement[1] != 0:
+                if frame_movement[1] != 0 or frame_movement[0] != 0:
                     self.death = True
 
         entity_rect = self.rect()
