@@ -27,7 +27,7 @@ AUTOTILE_MAP_BORDER = {
 }
 
 NEIGHBOR_OFFSETS = [(-1, 0), (-1, -1), (0, -1), (1, 1), (1, -1), (1, 0), (0, 0), (-1, 1), (0, 1), (1, 1)]
-PHYSICS_TILES = {'egypt_wood', 'brick', 'stone_border', 'egypt_border', 'barrier', 'text'}
+PHYSICS_TILES = {'egypt_wood', 'brick', 'stone_border', 'egypt_border', 'barrier', 'text', }
 DEATH_TILES = {'traps'}
 CHEST_TILES = {'chest'}
 KEY_TILES = {'key'}
@@ -36,6 +36,7 @@ BUTTON_TILES = {'button'}
 DOOR_TILES = {'door'}
 BARRIER_TILES = {'barrier'}
 AUTOTILE_TYPES = {'egypt_wood'}
+RAT_TILES = {'Rat'}
 AUTOTILE_BORDERS = {'stone_border', 'egypt_border'}
 
 
