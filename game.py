@@ -22,7 +22,7 @@ class Game:
 
         pygame.display.set_caption('Game')
         pygame.display.set_icon(icon)
-        self.screen = pygame.display.set_mode((1920, 1000))
+        self.screen = pygame.display.set_mode((1920, 1080))
         self.display = pygame.Surface((1920, 1080), pygame.SRCALPHA)
         self.display_2 = pygame.Surface((1920, 1080))
 

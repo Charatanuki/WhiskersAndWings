@@ -166,23 +166,23 @@ class Tilemap:
                 if tile['variant'] == 0 or tile['variant'] == 4:  # collision traps down
                     rects.append(
                         pygame.Rect(tile['pos'][0] * self.tile_size,
-                                    (tile['pos'][1] * (self.tile_size)) + self.tile_size // 2, self.tile_size,
-                                    self.tile_size // 2))
+                                    (tile['pos'][1] * (self.tile_size)) + self.tile_size // 1.5,
+                                    self.tile_size, self.tile_size // 3))
                 elif tile['variant'] == 2 or tile['variant'] == 6:  # collision traps up
                     rects.append(
-                        pygame.Rect(tile['pos'][0] * self.tile_size, (tile['pos'][1] * (self.tile_size)),
-                                    self.tile_size,
-                                    self.tile_size // 2))
+                        pygame.Rect(tile['pos'][0] * self.tile_size,
+                                    (tile['pos'][1] * (self.tile_size)),
+                                    self.tile_size, self.tile_size // 3))
                 elif tile['variant'] == 3 or tile['variant'] == 7:  # collision traps up
                     rects.append(
-                        pygame.Rect(tile['pos'][0] * self.tile_size, (tile['pos'][1] * (self.tile_size)),
-                                    self.tile_size // 2,
-                                    self.tile_size))
+                        pygame.Rect(tile['pos'][0] * self.tile_size, 
+                                    (tile['pos'][1] * (self.tile_size)),
+                                    self.tile_size // 3, self.tile_size))
                 elif tile['variant'] == 1 or tile['variant'] == 5:  # collision traps up
                     rects.append(
-                        pygame.Rect((tile['pos'][0] * self.tile_size) + self.tile_size // 2,
-                                    (tile['pos'][1] * (self.tile_size)), self.tile_size // 2,
-                                    self.tile_size))
+                        pygame.Rect((tile['pos'][0] * self.tile_size) + self.tile_size // 1.5,
+                                    (tile['pos'][1] * (self.tile_size)),
+                                    self.tile_size // 3, self.tile_size))
         return rects
 
     def chest_state(self, pos):
