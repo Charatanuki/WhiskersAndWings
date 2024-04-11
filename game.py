@@ -44,8 +44,9 @@ class Game:
             'arrow_spawner': load_images('tiles/arrow_spawner'),
             'arrow': load_images('tiles/arrows'),
             'player': load_image('entities/player.png'),
-            'clouds': load_images('clouds'),
+            #'clouds': load_images('clouds'),
             'torch': load_images('tiles/torch'),
+            'background': load_images('background'),
             'enemy/idle': Animation(load_images('entities/enemy/idle'), img_dur=6),
             'enemy/run': Animation(load_images('entities/enemy/run'), img_dur=4),
             'player/idle': Animation(load_images('entities/player/idle'), img_dur=6),
@@ -72,7 +73,7 @@ class Game:
         self.sfx['dash'].set_volume(0.3)
         self.sfx['jump'].set_volume(0.3)
 
-        self.clouds = Clouds(self.assets['clouds'], count=16)
+        #self.clouds = Clouds(self.assets['clouds'], count=16)
 
         self.player = Player(self, (200, 1000), (35, 35))
 
@@ -89,6 +90,12 @@ class Game:
 
     def load_level(self, map_id):
         self.tilemap.load('data/maps/' + str(map_id) + '.json')
+        if self.level == 0: #Verify if it's the 1st lvl or not to put the correct bg
+            background = 'background/fond_egypte.png'
+        else:
+            background = 'background/fond_medieval.png'
+            
+        self.background = load_image(background)
 
         self.leaf_spawners = []
         for tree in self.tilemap.extract([('large_decor', 2)], keep=True):
@@ -127,7 +134,7 @@ class Game:
 
         while True:
             self.display.fill((0, 0, 0, 0))
-            self.display_2.fill((0, 140, 233))
+            self.display_2.blit(self.background, (0, 0))
 
             self.screenshake = max(0, self.screenshake - 1)
 
@@ -159,8 +166,8 @@ class Game:
                     self.particles.append(Particles(self, 'leaf', pos,
                                                     velocity=[-0.1, 0.3], frame=random.randint(0, 20)))
 
-            self.clouds.update()
-            self.clouds.render(self.display_2, offset=render_scroll)
+            #self.clouds.update()
+            #self.clouds.render(self.display_2, offset=render_scroll)
 
             self.tilemap.render(self.display, offset=render_scroll)
 
