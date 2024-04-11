@@ -158,6 +158,11 @@ class Enemy(PhysicsEntity):
                     self.flip = not self.flip
                 else:
                     movement = (movement[0] - 0.5 if self.flip else 0.5, movement[1])
+            elif tilemap.solid_check_platform((self.rect().centerx + (-7 if self.flip else 7), self.pos[1] + 23)):
+                if self.collisions['right'] or self.collisions['left']:
+                    self.flip = not self.flip
+                else:
+                    movement = (movement[0] - 0.5 if self.flip else 0.5, movement[1])
             else:
                 self.flip = not self.flip
             self.walking = max(0, self.walking - 1)

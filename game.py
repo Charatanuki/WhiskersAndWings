@@ -106,7 +106,7 @@ class Game:
             elif spawner['variant'] == 1:
                 self.bird.pos = spawner['pos'].copy()
             else:
-                self.enemies.append(Enemy(self, spawner['pos'], (8, 15)))
+                self.enemies.append(Enemy(self, spawner['pos'], (56, 18)))
 
         pygame.mixer.music.stop()
         pygame.mixer.music.load(
