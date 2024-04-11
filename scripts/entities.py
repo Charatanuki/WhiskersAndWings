@@ -16,6 +16,7 @@ class PhysicsEntity:
         self.velocity = [0, 0]
         self.collisions = {'up': False, 'down': False, 'left': False, 'right': False}
         self.death = False
+        self.at_door = False
 
         self.action = ''
         self.anim_offset = (-3, -3)
@@ -40,12 +41,22 @@ class PhysicsEntity:
         self.pos[0] += frame_movement[0]
 
         entity_rect = self.rect()
-        for rect in tilemap.chest_rects_around(self.pos):
+        if not self.game.chest:
+            for rect in tilemap.chest_rects_around(self.pos):
+                if rect.colliderect(entity_rect):
+                    self.game.chest = 1
+                    tilemap.chest_state(self.pos)
+        if self.game.chest and self.game.key_state == 1:
+            for rect in tilemap.key_rects_around(self.pos):
+                if rect.colliderect(entity_rect):
+                    self.game.key += 1
+                    tilemap.key_disable()
+                    print(self.game.key, self.game.key_state)
+        for rect in tilemap.door_rects_around(self.pos):
             if rect.colliderect(entity_rect):
-                self.game.chest = 1
-                tilemap.chest_state(self.pos)
-        for rect in tilemap.key_rects_around(self.pos):
-            pass
+                self.at_door = True
+            else:
+                self.at_door = False
         
         entity_rect = self.rect()
         for rect in tilemap.button_rects_around(self.pos):

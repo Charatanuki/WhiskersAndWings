@@ -46,7 +46,6 @@ class Game:
             'player': load_image('entities/player.png'),
             #'clouds': load_images('clouds'),
             'torch': load_images('tiles/torch'),
-            'background': load_images('background'),
             'enemy/idle': Animation(load_images('entities/enemy/idle'), img_dur=6),
             'enemy/run': Animation(load_images('entities/enemy/run'), img_dur=4),
             'player/idle': Animation(load_images('entities/player/idle'), img_dur=6),
@@ -57,6 +56,7 @@ class Game:
             'particle/particle': Animation(load_images('particles/particle'), img_dur=6, loop=False),
             'gun': load_image('gun.png'),
             'projectile': load_image('projectile.png'),
+            'background': load_images('background'),
         }
 
         self.sfx = {
@@ -90,12 +90,6 @@ class Game:
 
     def load_level(self, map_id):
         self.tilemap.load('data/maps/' + str(map_id) + '.json')
-        if self.level == 0: #Verify if it's the 1st lvl or not to put the correct bg
-            background = 'background/fond_egypte.png'
-        else:
-            background = 'background/fond_medieval.png'
-            
-        self.background = load_image(background)
 
         self.leaf_spawners = []
         for tree in self.tilemap.extract([('large_decor', 2)], keep=True):
@@ -119,12 +113,20 @@ class Game:
         self.player.death = False
         self.bird.death = False
 
+        self.player.at_door = False
+        self.bird.at_door = False
+
+        self.background = self.assets['background'][(min(self.level, len(os.listdir('data/images/background')) - 1))]
+
+
         self.projectiles = []
         self.particles = []
         self.sparks = []
         self.chest = 0
         self.button = 0
         self.lever = 1
+        self.key = 0
+        self.key_state = 0
 
         self.scroll = [0, 0]
         self.dead = 0
@@ -140,7 +142,7 @@ class Game:
 
             self.screenshake = max(0, self.screenshake - 1)
 
-            if len(self.enemies):
+            if self.player.at_door and self.bird.at_door and self.key:
                 self.transition += 1
                 if self.transition > 30:
                     self.level = min(self.level + 1, len(os.listdir('data/maps')) - 1)
@@ -262,7 +264,7 @@ class Game:
                         self.movement_bird[1] = True
                     if event.key == pygame.K_s:
                         self.movement_bird[3] = True
-                    if event.key == pygame.K_j:
+                    if event.key == pygame.K_l:
                         self.layout = not self.layout
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT:

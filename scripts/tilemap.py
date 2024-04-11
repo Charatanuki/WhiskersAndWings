@@ -33,6 +33,7 @@ CHEST_TILES = {'chest'}
 KEY_TILES = {'key'}
 LEVER_TILES ={'lever'}
 BUTTON_TILES = {'button'}
+DOOR_TILES = {'door'}
 AUTOTILE_TYPES = {'egypt_wood'}
 AUTOTILE_BORDERS = {'stone_border', 'egypt_border'}
 
@@ -71,6 +72,14 @@ class Tilemap:
             check_loc = str(tile_loc[0] + offset[0]) + ';' + str(tile_loc[1] + offset[1])
             if check_loc in self.tilemap:
                 tiles.append(self.tilemap[check_loc])
+        return tiles
+
+    def check_tile(self, tiletype):
+        tiles = []
+        for loc in self.tilemap:
+            for types in tiletype:
+                if self.tilemap[loc]['type'] == types:
+                    tiles.append(self.tilemap[loc])
         return tiles
 
     def save(self, path):
@@ -149,31 +158,57 @@ class Tilemap:
                                 self.tile_size))
         return rects
 
+    def door_rects_around(self, pos):
+        rects = []
+        for tile in self.tiles_around(pos):
+            if tile['type'] in DOOR_TILES:
+                rects.append(
+                    pygame.Rect(tile['pos'][0] * self.tile_size, tile['pos'][1] * self.tile_size, self.tile_size,
+                                self.tile_size))
+        return rects
+
+    def key_enable(self):
+        for tile in self.check_tile(KEY_TILES):
+            if tile['variant'] == 0:
+                tile['variant'] = 1
+                self.game.key_state = 1
+
+    def key_disable(self):
+        for tile in self.check_tile(KEY_TILES):
+            if tile['variant'] == 1:
+                tile['variant'] = 0
+                self.game.key_state = 2
+
     def chest_state(self, pos):
         if self.game.chest:
+            self.key_enable()
             for tile in self.tiles_around(pos):
                 if tile['type'] in CHEST_TILES:
                     tile['variant'] = 1
 
     def death_rects_around(self, pos):
         rects = []
-        for tile in self.tiles_around(pos): #collision with traps
+        for tile in self.tiles_around(pos):  # collision with traps
             if tile['type'] in DEATH_TILES:
-                if tile['variant'] == 0 or tile['variant'] == 4: #collision traps down
+                if tile['variant'] == 0 or tile['variant'] == 4:  # collision traps down
                     rects.append(
-                        pygame.Rect(tile['pos'][0] * self.tile_size, (tile['pos'][1] * (self.tile_size)) + self.tile_size // 2, self.tile_size,
-                                self.tile_size // 2))
-                elif tile['variant'] == 2 or tile['variant'] == 6:#collision traps up
+                        pygame.Rect(tile['pos'][0] * self.tile_size,
+                                    (tile['pos'][1] * (self.tile_size)) + self.tile_size // 2, self.tile_size,
+                                    self.tile_size // 2))
+                elif tile['variant'] == 2 or tile['variant'] == 6:  # collision traps up
                     rects.append(
-                        pygame.Rect(tile['pos'][0] * self.tile_size, (tile['pos'][1] * (self.tile_size)), self.tile_size,
-                                self.tile_size // 2))
-                elif tile['variant'] == 3 or tile['variant'] == 7:#collision traps up
+                        pygame.Rect(tile['pos'][0] * self.tile_size, (tile['pos'][1] * (self.tile_size)),
+                                    self.tile_size,
+                                    self.tile_size // 2))
+                elif tile['variant'] == 3 or tile['variant'] == 7:  # collision traps up
                     rects.append(
-                        pygame.Rect(tile['pos'][0] * self.tile_size, (tile['pos'][1] * (self.tile_size)), self.tile_size // 2,
+                        pygame.Rect(tile['pos'][0] * self.tile_size, (tile['pos'][1] * (self.tile_size)),
+                                    self.tile_size // 2,
                                     self.tile_size))
-                elif tile['variant'] == 1 or tile['variant'] == 5:#collision traps up
+                elif tile['variant'] == 1 or tile['variant'] == 5:  # collision traps up
                     rects.append(
-                        pygame.Rect((tile['pos'][0] * self.tile_size) + self.tile_size // 2, (tile['pos'][1] * (self.tile_size)), self.tile_size // 2,
+                        pygame.Rect((tile['pos'][0] * self.tile_size) + self.tile_size // 2,
+                                    (tile['pos'][1] * (self.tile_size)), self.tile_size // 2,
                                     self.tile_size))
         return rects
 
