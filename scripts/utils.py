@@ -18,7 +18,7 @@ def load_images(path):
     return images
 
 
-def get_font(size):  # Returns Press-Start-2P in the desired size
+def get_font(size):  
     return pygame.font.Font("data/font.ttf", size)
 
 
