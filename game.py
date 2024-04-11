@@ -31,6 +31,8 @@ class Game:
         self.assets = {
             'decor': load_images('tiles/decor'),
             'egypt_wood': load_images('tiles/egypt_wood'),
+            'egypt_platform': load_images('tiles/egypt_wood'),
+            'platform_dest': load_images('tiles/platform_dest'),
             'egypt_border': load_images('tiles/egypt_border'),
             'brick': load_images('tiles/brick'),
             'stone_border': load_images('tiles/stone_border'),
@@ -125,6 +127,7 @@ class Game:
         self.lever = 1
         self.key = 0
         self.key_state = 0
+        self.platform_has_moved = False
 
         self.scroll = [0, 0]
         self.dead = 0
