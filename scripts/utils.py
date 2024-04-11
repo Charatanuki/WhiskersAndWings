@@ -18,7 +18,7 @@ def load_images(path):
     return images
 
 
-def get_font(size):  
+def get_font(size):
     return pygame.font.Font("data/font.ttf", size)
 
 

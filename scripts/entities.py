@@ -81,6 +81,17 @@ class PhysicsEntity:
                     self.collisions['left'] = True
                 self.pos[0] = entity_rect.x
 
+        entity_rect = self.rect()
+        for rect in tilemap.platform_rects_around(self.pos):
+            if entity_rect.colliderect(rect):
+                if frame_movement[0] > 0:
+                    entity_rect.right = rect.left
+                    self.collisions['right'] = True
+                if frame_movement[0] < 0:
+                    entity_rect.left = rect.right
+                    self.collisions['left'] = True
+                self.pos[0] = entity_rect.x
+
         self.pos[1] += frame_movement[1]
 
         entity_rect = self.rect()
@@ -99,17 +110,7 @@ class PhysicsEntity:
                     entity_rect.top = rect.bottom
                     self.collisions['up'] = True
                 self.pos[1] = entity_rect.y
-        
-        entity_rect = self.rect()
-        for rect in tilemap.platform_rects_around(self.pos):
-            if entity_rect.colliderect(rect):
-                if frame_movement[0] > 0:
-                    entity_rect.right = rect.left
-                    self.collisions['right'] = True
-                if frame_movement[0] < 0:
-                    entity_rect.left = rect.right
-                    self.collisions['left'] = True
-                self.pos[0] = entity_rect.x
+
         
         entity_rect = self.rect()
         for rect in tilemap.platform_rects_around(self.pos):
