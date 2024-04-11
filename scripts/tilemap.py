@@ -27,13 +27,14 @@ AUTOTILE_MAP_BORDER = {
 }
 
 NEIGHBOR_OFFSETS = [(-1, 0), (-1, -1), (0, -1), (1, 1), (1, -1), (1, 0), (0, 0), (-1, 1), (0, 1), (1, 1)]
-PHYSICS_TILES = {'egypt_wood', 'brick', 'stone_border', 'egypt_border', 'medieval', 'text'}
+PHYSICS_TILES = {'egypt_wood', 'brick', 'stone_border', 'egypt_border', 'barrier', 'text'}
 DEATH_TILES = {'traps'}
 CHEST_TILES = {'chest'}
 KEY_TILES = {'key'}
-LEVER_TILES ={'lever'}
+LEVER_TILES = {'lever'}
 BUTTON_TILES = {'button'}
 DOOR_TILES = {'door'}
+BARRIER_TILES = {'barrier'}
 AUTOTILE_TYPES = {'egypt_wood'}
 AUTOTILE_BORDERS = {'stone_border', 'egypt_border'}
 
@@ -133,6 +134,11 @@ class Tilemap:
             for tile in self.tiles_around(pos):
                 if tile['type'] in BUTTON_TILES:
                     tile['variant'] = 1
+            self.barrier_remove()
+
+    def barrier_remove(self):
+        for tile in self.check_tile(BARRIER_TILES):
+            tile['pos'][0] = 64
 
     def lever_rects_around(self, pos):
         rects = []
@@ -142,13 +148,13 @@ class Tilemap:
                     pygame.Rect(tile['pos'][0] * self.tile_size, tile['pos'][1] * self.tile_size, self.tile_size,
                                 self.tile_size))
         return rects
-    
+
     def lever_state(self, pos):
         if self.game.lever:
             for tile in self.tiles_around(pos):
                 if tile['type'] in LEVER_TILES:
                     tile['variant'] = 0
-    
+
     def key_rects_around(self, pos):
         rects = []
         for tile in self.tiles_around(pos):
