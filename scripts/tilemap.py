@@ -27,7 +27,7 @@ AUTOTILE_MAP_BORDER = {
 }
 
 NEIGHBOR_OFFSETS = [(-1, 0), (-1, -1), (0, -1), (1, 1), (1, -1), (1, 0), (0, 0), (-1, 1), (0, 1), (1, 1)]
-PHYSICS_TILES = {'egypt_wood', 'brick', 'stone_border', 'egypt_border', 'barrier', 'text', }
+PHYSICS_TILES = {'egypt_wood', 'brick', 'stone_border', 'egypt_border', 'barrier', 'egypt_platform'}
 DEATH_TILES = {'traps'}
 CHEST_TILES = {'chest'}
 KEY_TILES = {'key'}
@@ -35,6 +35,8 @@ LEVER_TILES = {'lever'}
 BUTTON_TILES = {'button'}
 DOOR_TILES = {'door'}
 BARRIER_TILES = {'barrier'}
+MOVING_TILES = {'egypt_platform'}
+DEST_TILES = {'platform_dest'}
 AUTOTILE_TYPES = {'egypt_wood'}
 RAT_TILES = {'Rat'}
 AUTOTILE_BORDERS = {'stone_border', 'egypt_border'}
@@ -130,17 +132,6 @@ class Tilemap:
                                 self.tile_size))
         return rects
 
-    def button_state(self, pos):
-        if self.game.button:
-            for tile in self.tiles_around(pos):
-                if tile['type'] in BUTTON_TILES:
-                    tile['variant'] = 1
-            self.barrier_remove()
-
-    def barrier_remove(self):
-        for tile in self.check_tile(BARRIER_TILES):
-            tile['pos'][0] = 64
-
     def lever_rects_around(self, pos):
         rects = []
         for tile in self.tiles_around(pos):
@@ -149,12 +140,6 @@ class Tilemap:
                     pygame.Rect(tile['pos'][0] * self.tile_size, tile['pos'][1] * self.tile_size, self.tile_size,
                                 self.tile_size))
         return rects
-
-    def lever_state(self, pos):
-        if self.game.lever:
-            for tile in self.tiles_around(pos):
-                if tile['type'] in LEVER_TILES:
-                    tile['variant'] = 0
 
     def key_rects_around(self, pos):
         rects = []
@@ -173,25 +158,6 @@ class Tilemap:
                     pygame.Rect(tile['pos'][0] * self.tile_size, tile['pos'][1] * self.tile_size, self.tile_size,
                                 self.tile_size))
         return rects
-
-    def key_enable(self):
-        for tile in self.check_tile(KEY_TILES):
-            if tile['variant'] == 0:
-                tile['variant'] = 1
-                self.game.key_state = 1
-
-    def key_disable(self):
-        for tile in self.check_tile(KEY_TILES):
-            if tile['variant'] == 1:
-                tile['variant'] = 0
-                self.game.key_state = 2
-
-    def chest_state(self, pos):
-        if self.game.chest:
-            self.key_enable()
-            for tile in self.tiles_around(pos):
-                if tile['type'] in CHEST_TILES:
-                    tile['variant'] = 1
 
     def death_rects_around(self, pos):
         rects = []
@@ -218,6 +184,51 @@ class Tilemap:
                                     (tile['pos'][1] * (self.tile_size)), self.tile_size // 2,
                                     self.tile_size))
         return rects
+
+    def chest_state(self, pos):
+        if self.game.chest:
+            self.key_enable()
+            for tile in self.tiles_around(pos):
+                if tile['type'] in CHEST_TILES:
+                    tile['variant'] = 1
+
+    def button_state(self, pos):
+        if self.game.button:
+            for tile in self.tiles_around(pos):
+                if tile['type'] in BUTTON_TILES:
+                    tile['variant'] = 1
+            self.barrier_remove()
+
+    def lever_state(self, pos):
+        if self.game.lever:
+            for tile in self.tiles_around(pos):
+                if tile['type'] in LEVER_TILES:
+                    tile['variant'] = 0
+            self.plat_move()
+
+    def barrier_remove(self):
+        for tile in self.check_tile(BARRIER_TILES):
+            tile['pos'][0] = 64
+
+    def plat_move(self):
+        if not self.game.platform_has_moved:
+            for tile in self.check_tile(MOVING_TILES):
+                tile['pos'][1] = 64
+            for dest in self.check_tile(DEST_TILES):
+                dest['type'] = 'egypt_platform'
+            self.game.platform_has_moved = True
+
+    def key_enable(self):
+        for tile in self.check_tile(KEY_TILES):
+            if tile['variant'] == 0:
+                tile['variant'] = 1
+                self.game.key_state = 1
+
+    def key_disable(self):
+        for tile in self.check_tile(KEY_TILES):
+            if tile['variant'] == 1:
+                tile['variant'] = 0
+                self.game.key_state = 2
 
     def autotile(self):
         for loc in self.tilemap:

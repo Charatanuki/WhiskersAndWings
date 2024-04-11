@@ -22,6 +22,8 @@ class Editor:
             'decor': load_images('tiles/decor'),
             'egypt_wood': load_images('tiles/egypt_wood'),
             'egypt_border': load_images('tiles/egypt_border'),
+            'egypt_platform': load_images('tiles/editor_platform'),
+            'platform_dest': load_images('tiles/dest/'),
             'stone_border': load_images('tiles/stone_border'),
             'brick': load_images('tiles/brick'),
             'spawners': load_images('tiles/spawners'),

@@ -13,13 +13,16 @@ from scripts.particles import Particles
 from scripts.spark import Spark
 from scripts.button import Button
 
+icon = pygame.image.load("data/icon.png")
+
 
 class Game:
     def __init__(self):
         pygame.init()
 
         pygame.display.set_caption('Game')
-        self.screen = pygame.display.set_mode((1920, 1080))
+        pygame.display.set_icon(icon)
+        self.screen = pygame.display.set_mode((1920, 1000))
         self.display = pygame.Surface((1920, 1080), pygame.SRCALPHA)
         self.display_2 = pygame.Surface((1920, 1080))
 
@@ -31,6 +34,8 @@ class Game:
         self.assets = {
             'decor': load_images('tiles/decor'),
             'egypt_wood': load_images('tiles/egypt_wood'),
+            'egypt_platform': load_images('tiles/egypt_wood'),
+            'platform_dest': load_images('tiles/platform_dest'),
             'egypt_border': load_images('tiles/egypt_border'),
             'brick': load_images('tiles/brick'),
             'stone_border': load_images('tiles/stone_border'),
@@ -125,6 +130,7 @@ class Game:
         self.lever = 1
         self.key = 0
         self.key_state = 0
+        self.platform_has_moved = False
 
         self.scroll = [0, 0]
         self.dead = 0
@@ -140,7 +146,7 @@ class Game:
             if self.player.at_door and self.bird.at_door and self.key:
                 self.transition += 1
                 if self.transition > 30:
-                    #self.level = min(self.level + 1, len(os.listdir('data/maps')) - 1)
+                    # self.level = min(self.level + 1, len(os.listdir('data/maps')) - 1)
                     self.level += 1
                     if self.level > (len(os.listdir('data/maps')) - 1):
                         self.end_menu()
