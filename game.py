@@ -132,6 +132,9 @@ class Game:
         self.key_state = 0
         self.platform_has_moved = False
 
+        self.rats = 0
+        self.rats_max = len(self.enemies)
+
         self.scroll = [0, 0]
         self.dead = 0
         self.transition = -30
@@ -159,6 +162,15 @@ class Game:
                 self.dead = 1
 
             if self.dead:
+                if self.dead == 1:
+                    for i in range(30):
+                        angle = random.random() * math.pi * 2
+                        speed = random.random() * 5
+                        self.sparks.append(Spark(self.player.rect().center, angle, 2 + random.random()))
+                        self.particles.append(Particles(self, 'particle', self.player.rect().center,
+                                                        velocity=[math.cos(angle + math.pi) * speed * 0.5,
+                                                                  math.sin(angle + math.pi) * speed],
+                                                        frame=random.randint(0, 7)))
                 self.dead += 1
                 if self.dead >= 10:
                     self.transition = min(30, self.transition + 1)
@@ -183,6 +195,11 @@ class Game:
                 enemy.render(self.display, offset=render_scroll)
                 if kill:
                     self.enemies.remove(enemy)
+
+            if self.rats_max:
+                if self.rats == self.rats_max:
+                    if self.key_state == 0:
+                        self.tilemap.key_enable()
 
             if not self.dead:
                 self.player.update(self.tilemap, (self.movement[1] - self.movement[0], 0), (3, 2))

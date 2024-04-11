@@ -46,7 +46,7 @@ class PhysicsEntity:
                 if rect.colliderect(entity_rect):
                     self.game.chest = 1
                     tilemap.chest_state(self.pos)
-        if self.game.chest and self.game.key_state == 1:
+        if self.game.key_state == 1:
             for rect in tilemap.key_rects_around(self.pos):
                 if rect.colliderect(entity_rect):
                     self.game.key += 1
@@ -57,7 +57,7 @@ class PhysicsEntity:
                 self.at_door = True
             else:
                 self.at_door = False
-        
+
         entity_rect = self.rect()
         for rect in tilemap.button_rects_around(self.pos):
             if rect.colliderect(entity_rect):
@@ -111,7 +111,6 @@ class PhysicsEntity:
                     self.collisions['up'] = True
                 self.pos[1] = entity_rect.y
 
-        
         entity_rect = self.rect()
         for rect in tilemap.platform_rects_around(self.pos):
             if entity_rect.colliderect(rect):
@@ -195,22 +194,22 @@ class Enemy(PhysicsEntity):
         else:
             self.set_action('idle')
 
-        if abs(self.game.player.dashing) >= 50:
-            if self.rect().colliderect(self.game.player.rect()):
-                self.game.screenshake = max(16, self.game.screenshake)
-                self.game.sfx['hit'].play()
-                for i in range(30):
-                    angle = random.random() * math.pi * 2
-                    speed = random.random() * 5
-                    self.game.sparks.append(Spark(self.rect().center, angle, 2 + random.random()))
-                    self.game.particles.append(
-                        Particles(self.game, 'particle', self.rect().center,
-                                  velocity=[math.cos(angle + math.pi) * speed * 0.5,
-                                            math.sin(angle + math.pi) * speed],
-                                  frame=random.randint(0, 7)))
-                self.game.sparks.append(Spark(self.rect().center, 0, 5 + random.random()))
-                self.game.sparks.append(Spark(self.rect().center, math.pi, 5 + random.random()))
-                return True
+        if self.rect().colliderect(self.game.player.rect()) or self.rect().colliderect(self.game.bird.rect()):
+            self.game.screenshake = max(16, self.game.screenshake)
+            self.game.sfx['hit'].play()
+            for i in range(30):
+                angle = random.random() * math.pi * 2
+                speed = random.random() * 5
+                self.game.sparks.append(Spark(self.rect().center, angle, 2 + random.random()))
+                self.game.particles.append(
+                    Particles(self.game, 'particle', self.rect().center,
+                              velocity=[math.cos(angle + math.pi) * speed * 0.5,
+                                        math.sin(angle + math.pi) * speed],
+                              frame=random.randint(0, 7)))
+            self.game.sparks.append(Spark(self.rect().center, 0, 5 + random.random()))
+            self.game.sparks.append(Spark(self.rect().center, math.pi, 5 + random.random()))
+            self.game.rats += 1
+            return True
 
     def render(self, surf, offset=(0, 0)):
         super().render(surf, offset=offset)
@@ -236,7 +235,7 @@ class Player(PhysicsEntity):
 
         self.air_time += 1
 
-        if self.air_time > 120:
+        if self.air_time > 300:
             if not self.game.dead:
                 self.game.screenshake = max(16, self.game.screenshake)
             self.game.dead += 1
@@ -247,6 +246,7 @@ class Player(PhysicsEntity):
 
         self.wall_slide = False
         if (self.collisions['right'] or self.collisions['left']) and self.air_time > 4:
+            self.air_time = 5
             self.wall_slide = True
             self.velocity[1] = min(self.velocity[1], 0.5)
             if self.collisions['right']:
