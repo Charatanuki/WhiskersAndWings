@@ -46,6 +46,18 @@ class PhysicsEntity:
                 tilemap.chest_state(self.pos)
         for rect in tilemap.key_rects_around(self.pos):
             pass
+        
+        entity_rect = self.rect()
+        for rect in tilemap.button_rects_around(self.pos):
+            if rect.colliderect(entity_rect):
+                self.game.button = 1
+                tilemap.button_state(self.pos)
+
+        entity_rect = self.rect()
+        for rect in tilemap.lever_rects_around(self.pos):
+            if rect.colliderect(entity_rect):
+                self.game.lever = 1
+                tilemap.lever_state(self.pos)
 
         entity_rect = self.rect()
         for rect in tilemap.physics_rects_around(self.pos):

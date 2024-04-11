@@ -123,6 +123,8 @@ class Game:
         self.particles = []
         self.sparks = []
         self.chest = 0
+        self.button = 0
+        self.lever = 1
 
         self.scroll = [0, 0]
         self.dead = 0

@@ -31,6 +31,8 @@ PHYSICS_TILES = {'egypt_wood', 'brick', 'stone_border', 'egypt_border'}
 DEATH_TILES = {'traps'}
 CHEST_TILES = {'chest'}
 KEY_TILES = {'key'}
+LEVER_TILES ={'lever'}
+BUTTON_TILES = {'button'}
 AUTOTILE_TYPES = {'egypt_wood'}
 AUTOTILE_BORDERS = {'stone_border', 'egypt_border'}
 
@@ -108,6 +110,36 @@ class Tilemap:
                                 self.tile_size))
         return rects
 
+    def button_rects_around(self, pos):
+        rects = []
+        for tile in self.tiles_around(pos):
+            if tile['type'] in BUTTON_TILES:
+                rects.append(
+                    pygame.Rect(tile['pos'][0] * self.tile_size, tile['pos'][1] * self.tile_size, self.tile_size,
+                                self.tile_size))
+        return rects
+
+    def button_state(self, pos):
+        if self.game.button:
+            for tile in self.tiles_around(pos):
+                if tile['type'] in BUTTON_TILES:
+                    tile['variant'] = 1
+
+    def lever_rects_around(self, pos):
+        rects = []
+        for tile in self.tiles_around(pos):
+            if tile['type'] in LEVER_TILES:
+                rects.append(
+                    pygame.Rect(tile['pos'][0] * self.tile_size, tile['pos'][1] * self.tile_size, self.tile_size,
+                                self.tile_size))
+        return rects
+    
+    def lever_state(self, pos):
+        if self.game.lever:
+            for tile in self.tiles_around(pos):
+                if tile['type'] in LEVER_TILES:
+                    tile['variant'] = 0
+    
     def key_rects_around(self, pos):
         rects = []
         for tile in self.tiles_around(pos):
