@@ -6,11 +6,12 @@ import random
 import pygame
 
 from scripts.entities import Player, Enemy, Bird
-from scripts.utils import load_image, load_images, Animation
+from scripts.utils import load_image, load_images, get_font, Animation
 from scripts.tilemap import Tilemap
 from scripts.clouds import Clouds
 from scripts.particles import Particles
 from scripts.spark import Spark
+from scripts.button import Button
 
 
 class Game:
@@ -44,7 +45,6 @@ class Game:
             'arrow_spawner': load_images('tiles/arrow_spawner'),
             'arrow': load_images('tiles/arrows'),
             'player': load_image('entities/player.png'),
-            #'clouds': load_images('clouds'),
             'torch': load_images('tiles/torch'),
             'enemy/idle': Animation(load_images('entities/enemy/idle'), img_dur=6),
             'enemy/run': Animation(load_images('entities/enemy/run'), img_dur=4),
@@ -57,6 +57,7 @@ class Game:
             'gun': load_image('gun.png'),
             'projectile': load_image('projectile.png'),
             'background': load_images('background'),
+            'menu': load_images('menus/bg')
         }
 
         self.sfx = {
@@ -64,16 +65,12 @@ class Game:
             'dash': pygame.mixer.Sound('data/sfx/dash.wav'),
             'hit': pygame.mixer.Sound('data/sfx/hit.wav'),
             'shoot': pygame.mixer.Sound('data/sfx/shoot.wav'),
-            'ambience': pygame.mixer.Sound('data/sfx/ambience.wav'),
         }
 
-        self.sfx['ambience'].set_volume(0.2)
         self.sfx['shoot'].set_volume(0.4)
         self.sfx['hit'].set_volume(0.8)
         self.sfx['dash'].set_volume(0.3)
         self.sfx['jump'].set_volume(0.3)
-
-        #self.clouds = Clouds(self.assets['clouds'], count=16)
 
         self.player = Player(self, (200, 1000), (35, 35))
 
@@ -106,7 +103,8 @@ class Game:
                 self.enemies.append(Enemy(self, spawner['pos'], (8, 15)))
 
         pygame.mixer.music.stop()
-        pygame.mixer.music.load('data/music/' + str((min(self.level, len(os.listdir('data/music')) - 1))) + '.wav')
+        pygame.mixer.music.load(
+            'data/music/levels/' + str((min(self.level, len(os.listdir('data/music/levels')) - 1))) + '.wav')
         pygame.mixer.music.set_volume(0.5)
         pygame.mixer.music.play(-1)
 
@@ -117,7 +115,6 @@ class Game:
         self.bird.at_door = False
 
         self.background = self.assets['background'][(min(self.level, len(os.listdir('data/images/background')) - 1))]
-
 
         self.projectiles = []
         self.particles = []
@@ -133,9 +130,6 @@ class Game:
         self.transition = -30
 
     def run(self):
-
-        self.sfx['ambience'].play(-1)
-
         while True:
             self.display.fill((0, 0, 0, 0))
             self.display_2.blit(self.background, (0, 0))
@@ -145,8 +139,12 @@ class Game:
             if self.player.at_door and self.bird.at_door and self.key:
                 self.transition += 1
                 if self.transition > 30:
-                    self.level = min(self.level + 1, len(os.listdir('data/maps')) - 1)
-                    self.load_level(self.level)
+                    #self.level = min(self.level + 1, len(os.listdir('data/maps')) - 1)
+                    self.level += 1
+                    if self.level > (len(os.listdir('data/maps')) - 1):
+                        self.end_menu()
+                    else:
+                        self.load_level(self.level)
             if self.transition < 0:
                 self.transition += 1
 
@@ -170,8 +168,8 @@ class Game:
                     self.particles.append(Particles(self, 'leaf', pos,
                                                     velocity=[-0.1, 0.3], frame=random.randint(0, 20)))
 
-            #self.clouds.update()
-            #self.clouds.render(self.display_2, offset=render_scroll)
+            # self.clouds.update()
+            # self.clouds.render(self.display_2, offset=render_scroll)
 
             self.tilemap.render(self.display, offset=render_scroll)
 
@@ -303,5 +301,72 @@ class Game:
             pygame.display.update()
             self.clock.tick(60)
 
+    def main_menu(self):
+        pygame.mixer.music.load("data/music/menus/background_music.mp3")
+        pygame.mixer.music.play(-1)
+        while True:
+            self.screen.blit(self.assets['menu'][0], (0, 0))
 
-Game().run()
+            MENU_MOUSE_POS = pygame.mouse.get_pos()
+
+            PLAY_BUTTON = Button(load_image("menus/buttons/0.png"), pos=(960, 850),
+                                 text_input="PLAY", font=get_font(100), base_color="Orange", hovering_color="Yellow")
+            QUIT_BUTTON = Button(load_image("menus/buttons/0.png"), pos=(960, 1000),
+                                 text_input="QUIT", font=get_font(50), base_color="White", hovering_color="Yellow")
+
+            for button in [PLAY_BUTTON, QUIT_BUTTON]:
+                button.changeColor(MENU_MOUSE_POS)
+                button.update(self.screen)
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        pygame.mixer.music.stop()
+                        pygame.mixer.music.unload()
+                        Game().run()
+                    if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        pygame.quit()
+                        sys.exit()
+
+            pygame.display.update()
+
+    def end_menu(self):
+        pygame.mixer.music.stop()
+        pygame.mixer.music.load("data/music/menus/background_music.mp3")
+        pygame.mixer.music.play(-1)
+        self.level = 0
+        while True:
+            self.screen.blit(self.assets['menu'][1], (0, 0))
+
+            MENU_MOUSE_POS = pygame.mouse.get_pos()
+
+            REPLAY_BUTTON = Button(load_image("menus/buttons/0.png"), pos=(960, 850),
+                                   text_input="REPLAY", font=get_font(100), base_color="Orange",
+                                   hovering_color="Yellow")
+            QUIT_BUTTON = Button(load_image("menus/buttons/0.png"), pos=(960, 1000),
+                                 text_input="QUIT", font=get_font(50), base_color="White", hovering_color="Yellow")
+
+            for button in [REPLAY_BUTTON, QUIT_BUTTON]:
+                button.changeColor(MENU_MOUSE_POS)
+                button.update(self.screen)
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if REPLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        pygame.mixer.music.stop()
+                        pygame.mixer.music.unload()
+                        Game().run()
+                    if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        pygame.quit()
+                        sys.exit()
+
+            pygame.display.update()
+
+
+Game().main_menu()
