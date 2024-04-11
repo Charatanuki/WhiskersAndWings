@@ -36,6 +36,7 @@ class Editor:
             'door': load_images('tiles/doors'),
             'key': load_images('tiles/key'),
             'torch': load_images('tiles/torch_editor'),
+            'text' : load_images('tiles/text'),
         }
 
         self.movement = [False, False, False, False]

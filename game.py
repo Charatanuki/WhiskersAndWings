@@ -46,6 +46,7 @@ class Game:
             'arrow': load_images('tiles/arrows'),
             'player': load_image('entities/player.png'),
             'torch': load_images('tiles/torch'),
+            'text': load_images('tiles/text'),
             'enemy/idle': Animation(load_images('entities/enemy/idle'), img_dur=6),
             'enemy/run': Animation(load_images('entities/enemy/run'), img_dur=4),
             'player/idle': Animation(load_images('entities/player/idle'), img_dur=6),
@@ -57,7 +58,7 @@ class Game:
             'gun': load_image('gun.png'),
             'projectile': load_image('projectile.png'),
             'background': load_images('background'),
-            'menu': load_images('menus/bg')
+            'menu': load_images('menus/bg'),
         }
 
         self.sfx = {

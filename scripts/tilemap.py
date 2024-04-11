@@ -27,7 +27,7 @@ AUTOTILE_MAP_BORDER = {
 }
 
 NEIGHBOR_OFFSETS = [(-1, 0), (-1, -1), (0, -1), (1, 1), (1, -1), (1, 0), (0, 0), (-1, 1), (0, 1), (1, 1)]
-PHYSICS_TILES = {'egypt_wood', 'brick', 'stone_border', 'egypt_border'}
+PHYSICS_TILES = {'egypt_wood', 'brick', 'stone_border', 'egypt_border', 'medieval', 'text'}
 DEATH_TILES = {'traps'}
 CHEST_TILES = {'chest'}
 KEY_TILES = {'key'}
