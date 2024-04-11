@@ -99,7 +99,7 @@ class Game:
             self.leaf_spawners.append(pygame.Rect(4 + tree['pos'][0], 4 + tree['pos'][1], 23, 13))
 
         self.enemies = []
-        for spawner in self.tilemap.extract([('spawners', 0), ('spawners', 1)]):
+        for spawner in self.tilemap.extract([('spawners', 0), ('spawners', 1), (('spawners', 2))]):
             if spawner['variant'] == 0:
                 self.player.pos = spawner['pos'].copy()
                 self.player.air_time = 0
@@ -175,8 +175,6 @@ class Game:
                     self.particles.append(Particles(self, 'leaf', pos,
                                                     velocity=[-0.1, 0.3], frame=random.randint(0, 20)))
 
-            # self.clouds.update()
-            # self.clouds.render(self.display_2, offset=render_scroll)
 
             self.tilemap.render(self.display, offset=render_scroll)
 

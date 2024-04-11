@@ -39,7 +39,6 @@ class Editor:
             'key': load_images('tiles/key'),
             'torch': load_images('tiles/torch_editor'),
             'text' : load_images('tiles/text'),
-            'Rat' : load_images ('tiles/Rat')
         }
 
         self.movement = [False, False, False, False]
