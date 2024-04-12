@@ -18,6 +18,10 @@ def load_images(path):
     return images
 
 
+def get_font(size):
+    return pygame.font.Font("data/font.ttf", size)
+
+
 class Animation:
     def __init__(self, images, img_dur=5, loop=True):
         self.images = images

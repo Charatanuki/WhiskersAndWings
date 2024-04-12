@@ -27,9 +27,21 @@ AUTOTILE_MAP_BORDER = {
 }
 
 NEIGHBOR_OFFSETS = [(-1, 0), (-1, -1), (0, -1), (1, 1), (1, -1), (1, 0), (0, 0), (-1, 1), (0, 1), (1, 1)]
-PHYSICS_TILES = {'egypt_wood', 'brick', 'stone_border', 'egypt_border'}
+PHYSICS_TILES = {'egypt_wood', 'brick', 'stone_border', 'egypt_border', 'barrier', 'egypt_platform'}
+DEATH_TILES = {'traps'}
+CHEST_TILES = {'chest'}
+KEY_TILES = {'key'}
+LEVER_TILES = {'lever'}
+BUTTON_TILES = {'button'}
+DOOR_TILES = {'door'}
+BARRIER_TILES = {'barrier'}
+MOVING_TILES = {'egypt_platform'}
+DEST_TILES = {'platform_dest'}
 AUTOTILE_TYPES = {'egypt_wood'}
+RAT_TILES = {'Rat'}
 AUTOTILE_BORDERS = {'stone_border', 'egypt_border'}
+PLATFORM_TILES = {'platform'}
+
 
 
 class Tilemap:
@@ -68,6 +80,14 @@ class Tilemap:
                 tiles.append(self.tilemap[check_loc])
         return tiles
 
+    def check_tile(self, tiletype):
+        tiles = []
+        for loc in self.tilemap:
+            for types in tiletype:
+                if self.tilemap[loc]['type'] == types:
+                    tiles.append(self.tilemap[loc])
+        return tiles
+
     def save(self, path):
         f = open(path, 'w')
         json.dump({'tilemap': self.tilemap, 'tile_size': self.tile_size, 'offgrid': self.offgrid_tiles}, f)
@@ -87,6 +107,12 @@ class Tilemap:
             if self.tilemap[tile_loc]['type'] in PHYSICS_TILES:
                 return self.tilemap[tile_loc]
 
+    def solid_check_platform(self, pos):
+        tile_loc = str(int(pos[0] // self.tile_size)) + ';' + str(int(pos[1] // self.tile_size))
+        if tile_loc in self.tilemap:
+            if self.tilemap[tile_loc]['type'] in PLATFORM_TILES:
+                return self.tilemap[tile_loc]
+
     def physics_rects_around(self, pos):
         rects = []
         for tile in self.tiles_around(pos):
@@ -95,6 +121,131 @@ class Tilemap:
                     pygame.Rect(tile['pos'][0] * self.tile_size, tile['pos'][1] * self.tile_size, self.tile_size,
                                 self.tile_size))
         return rects
+    
+    def platform_rects_around(self, pos):
+        rects = []
+        for tile in self.tiles_around(pos):
+            if tile['type'] in PLATFORM_TILES:
+                rects.append(
+                    pygame.Rect(tile['pos'][0] * self.tile_size, tile['pos'][1] * self.tile_size, self.tile_size,
+                                self.tile_size - 43))
+        return rects
+
+    def chest_rects_around(self, pos):
+        rects = []
+        for tile in self.tiles_around(pos):
+            if tile['type'] in CHEST_TILES:
+                rects.append(
+                    pygame.Rect(tile['pos'][0] * self.tile_size, tile['pos'][1] * self.tile_size, self.tile_size,
+                                self.tile_size))
+        return rects
+
+    def button_rects_around(self, pos):
+        rects = []
+        for tile in self.tiles_around(pos):
+            if tile['type'] in BUTTON_TILES:
+                rects.append(
+                    pygame.Rect(tile['pos'][0] * self.tile_size, tile['pos'][1] * self.tile_size, self.tile_size,
+                                self.tile_size))
+        return rects
+
+    def lever_rects_around(self, pos):
+        rects = []
+        for tile in self.tiles_around(pos):
+            if tile['type'] in LEVER_TILES:
+                rects.append(
+                    pygame.Rect(tile['pos'][0] * self.tile_size, tile['pos'][1] * self.tile_size, self.tile_size,
+                                self.tile_size))
+        return rects
+
+    def key_rects_around(self, pos):
+        rects = []
+        for tile in self.tiles_around(pos):
+            if tile['type'] in KEY_TILES:
+                rects.append(
+                    pygame.Rect(tile['pos'][0] * self.tile_size, tile['pos'][1] * self.tile_size, self.tile_size,
+                                self.tile_size))
+        return rects
+
+    def door_rects_around(self, pos):
+        rects = []
+        for tile in self.tiles_around(pos):
+            if tile['type'] in DOOR_TILES:
+                rects.append(
+                    pygame.Rect(tile['pos'][0] * self.tile_size, tile['pos'][1] * self.tile_size, self.tile_size,
+                                self.tile_size))
+        return rects
+
+    def death_rects_around(self, pos):
+        rects = []
+        for tile in self.tiles_around(pos):  # collision with traps
+            if tile['type'] in DEATH_TILES:
+                if tile['variant'] == 0 or tile['variant'] == 4:  # collision traps down
+                    rects.append(
+                        pygame.Rect(tile['pos'][0] * self.tile_size,
+                                    (tile['pos'][1] * (self.tile_size)) + self.tile_size // 1.5,
+                                    self.tile_size, self.tile_size // 3))
+                elif tile['variant'] == 2 or tile['variant'] == 6:  # collision traps up
+                    rects.append(
+                        pygame.Rect(tile['pos'][0] * self.tile_size,
+                                    (tile['pos'][1] * (self.tile_size)),
+                                    self.tile_size, self.tile_size // 3))
+                elif tile['variant'] == 3 or tile['variant'] == 7:  # collision traps up
+                    rects.append(
+                        pygame.Rect(tile['pos'][0] * self.tile_size,
+                                    (tile['pos'][1] * (self.tile_size)),
+                                    self.tile_size // 3, self.tile_size))
+                elif tile['variant'] == 1 or tile['variant'] == 5:  # collision traps up
+                    rects.append(
+                        pygame.Rect((tile['pos'][0] * self.tile_size) + self.tile_size // 1.5,
+                                    (tile['pos'][1] * (self.tile_size)),
+                                    self.tile_size // 3, self.tile_size))
+        return rects
+
+    def chest_state(self, pos):
+        if self.game.chest:
+            self.key_enable()
+            for tile in self.tiles_around(pos):
+                if tile['type'] in CHEST_TILES:
+                    tile['variant'] = 1
+
+    def button_state(self, pos):
+        if self.game.button:
+            for tile in self.tiles_around(pos):
+                if tile['type'] in BUTTON_TILES:
+                    tile['variant'] = 1
+            self.barrier_remove()
+
+    def lever_state(self, pos):
+        if self.game.lever:
+            for tile in self.tiles_around(pos):
+                if tile['type'] in LEVER_TILES:
+                    tile['variant'] = 0
+            self.plat_move()
+
+    def barrier_remove(self):
+        for tile in self.check_tile(BARRIER_TILES):
+            tile['pos'][0] = 64
+
+    def plat_move(self):
+        if not self.game.platform_has_moved:
+            for tile in self.check_tile(MOVING_TILES):
+                tile['pos'][1] = 64
+            for dest in self.check_tile(DEST_TILES):
+                dest['type'] = 'egypt_platform'
+            self.game.platform_has_moved = True
+
+    def key_enable(self):
+        for tile in self.check_tile(KEY_TILES):
+            if tile['variant'] == 0:
+                tile['variant'] = 1
+                self.game.key_state = 1
+
+    def key_disable(self):
+        for tile in self.check_tile(KEY_TILES):
+            if tile['variant'] == 1:
+                tile['variant'] = 0
+                self.game.key_state = 2
 
     def autotile(self):
         for loc in self.tilemap:

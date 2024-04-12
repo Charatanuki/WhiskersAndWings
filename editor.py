@@ -2,7 +2,7 @@ import sys
 
 import pygame
 
-from scripts.utils import load_images
+from scripts.utils import load_images, load_image
 from scripts.tilemap import Tilemap
 
 RENDER_SCALE = 1.0
@@ -22,10 +22,23 @@ class Editor:
             'decor': load_images('tiles/decor'),
             'egypt_wood': load_images('tiles/egypt_wood'),
             'egypt_border': load_images('tiles/egypt_border'),
+            'egypt_platform': load_images('tiles/editor_platform'),
+            'platform_dest': load_images('tiles/dest/'),
             'stone_border': load_images('tiles/stone_border'),
-            'large_decor': load_images('tiles/large_decor'),
             'brick': load_images('tiles/brick'),
             'spawners': load_images('tiles/spawners'),
+            'traps': load_images('tiles/traps'),
+            'arrow_spawner': load_images('tiles/arrow_spawner'),
+            'arrow': load_images('tiles/arrows'),
+            'barrier': load_images('tiles/barrier'),
+            'platform': load_images('tiles/platforms'),
+            'button': load_images('tiles/buttons'),
+            'lever': load_images('tiles/levers'),
+            'chest': load_images('tiles/chest'),
+            'door': load_images('tiles/doors'),
+            'key': load_images('tiles/key'),
+            'torch': load_images('tiles/torch_editor'),
+            'text' : load_images('tiles/text'),
         }
 
         self.movement = [False, False, False, False]
