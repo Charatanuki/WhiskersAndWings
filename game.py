@@ -261,50 +261,51 @@ class Game:
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
+                    # Movement Bird
                     if event.key == pygame.K_LEFT:
-                        self.movement[0] = True
+                        self.movement_bird[0] = True
                     if event.key == pygame.K_RIGHT:
-                        self.movement[1] = True
+                        self.movement_bird[1] = True
                     if event.key == pygame.K_UP:
-                        if self.player.jump():
-                            self.sfx['jump'].play()
-                    if event.key == pygame.K_x:
-                        self.player.dash()
+                        self.movement_bird[2] = True
+                    if event.key == pygame.K_DOWN:
+                        self.movement_bird[3] = True
+                    # Movement Cat
                     if self.layout:
                         if event.key == pygame.K_a:
-                            self.movement_bird[0] = True
+                            self.movement[0] = True
                         if event.key == pygame.K_w:
-                            self.movement_bird[2] = True
+                            if self.player.jump():
+                                self.sfx['jump'].play()
                     else:
                         if event.key == pygame.K_q:
-                            self.movement_bird[0] = True
+                            self.movement[0] = True
                         if event.key == pygame.K_z:
-                            self.movement_bird[2] = True
+                            if self.player.jump():
+                                self.sfx['jump'].play()
                     if event.key == pygame.K_d:
-                        self.movement_bird[1] = True
-                    if event.key == pygame.K_s:
-                        self.movement_bird[3] = True
+                        self.movement[1] = True
+                    if event.key == pygame.K_LSHIFT:
+                        self.player.dash()
                     if event.key == pygame.K_l:
                         self.layout = not self.layout
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT:
-                        self.movement[0] = False
+                        self.movement_bird[0] = False
                     if event.key == pygame.K_RIGHT:
-                        self.movement[1] = False
+                        self.movement_bird[1] = False
+                    if event.key == pygame.K_UP:
+                        self.movement_bird[2] = False
+                    if event.key == pygame.K_DOWN:
+                        self.movement_bird[3] = False
                     if self.layout:
                         if event.key == pygame.K_a:
-                            self.movement_bird[0] = False
-                        if event.key == pygame.K_w:
-                            self.movement_bird[2] = False
+                            self.movement[0] = False
                     else:
                         if event.key == pygame.K_q:
-                            self.movement_bird[0] = False
-                        if event.key == pygame.K_z:
-                            self.movement_bird[2] = False
+                            self.movement[0] = False
                     if event.key == pygame.K_d:
-                        self.movement_bird[1] = False
-                    if event.key == pygame.K_s:
-                        self.movement_bird[3] = False
+                        self.movement[1] = False
 
             if self.transition:
                 transition_surf = pygame.Surface(self.display.get_size())
