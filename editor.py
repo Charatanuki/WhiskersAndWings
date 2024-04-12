@@ -2,7 +2,7 @@ import sys
 
 import pygame
 
-from scripts.utils import load_images, load_image
+from scripts.utils import load_images
 from scripts.tilemap import Tilemap
 
 RENDER_SCALE = 1.0
@@ -38,7 +38,7 @@ class Editor:
             'door': load_images('tiles/doors'),
             'key': load_images('tiles/key'),
             'torch': load_images('tiles/torch_editor'),
-            'text' : load_images('tiles/text'),
+            'text': load_images('tiles/text'),
         }
 
         self.movement = [False, False, False, False]

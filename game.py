@@ -8,7 +8,6 @@ import pygame
 from scripts.entities import Player, Enemy, Bird
 from scripts.utils import load_image, load_images, get_font, Animation
 from scripts.tilemap import Tilemap
-from scripts.clouds import Clouds
 from scripts.particles import Particles
 from scripts.spark import Spark
 from scripts.button import Button
@@ -60,8 +59,6 @@ class Game:
             'player/wall_slide': Animation(load_images('entities/player/wall_slide')),
             'player2/idle': Animation(load_images('entities/player2/idle'), img_dur=6),
             'particle/particle': Animation(load_images('particles/particle'), img_dur=6, loop=False),
-            'gun': load_image('gun.png'),
-            'projectile': load_image('projectile.png'),
             'background': load_images('background'),
             'menu': load_images('menus/bg'),
         }
@@ -93,10 +90,6 @@ class Game:
 
     def load_level(self, map_id):
         self.tilemap.load('data/maps/' + str(map_id) + '.json')
-
-        self.leaf_spawners = []
-        for tree in self.tilemap.extract([('large_decor', 2)], keep=True):
-            self.leaf_spawners.append(pygame.Rect(4 + tree['pos'][0], 4 + tree['pos'][1], 23, 13))
 
         self.enemies = []
         for spawner in self.tilemap.extract([('spawners', 0), ('spawners', 1), (('spawners', 2))]):
@@ -149,7 +142,6 @@ class Game:
             if self.player.at_door and self.bird.at_door and self.key:
                 self.transition += 1
                 if self.transition > 30:
-                    # self.level = min(self.level + 1, len(os.listdir('data/maps')) - 1)
                     self.level += 1
                     if self.level > (len(os.listdir('data/maps')) - 1):
                         self.end_menu()
@@ -179,14 +171,7 @@ class Game:
 
             self.scroll[0] += (self.player.rect().centerx - self.display.get_width() / 2 - self.scroll[0]) / 30
             self.scroll[1] += (self.player.rect().centery - self.display.get_width() / 2 - self.scroll[1]) / 30
-            render_scroll = (0, 0)  # (int(self.scroll[0]), int(self.scroll[1]))
-
-            for rect in self.leaf_spawners:
-                if random.random() * 49999 < rect.width * rect.height:
-                    pos = (rect.x + random.random() * rect.width, rect.y + random.random() * rect.height)
-                    self.particles.append(Particles(self, 'leaf', pos,
-                                                    velocity=[-0.1, 0.3], frame=random.randint(0, 20)))
-
+            render_scroll = (0, 0)
 
             self.tilemap.render(self.display, offset=render_scroll)
 
@@ -207,35 +192,6 @@ class Game:
                 self.bird.update(self.tilemap, (self.movement_bird[1] - self.movement_bird[0],
                                                 self.movement_bird[3] - self.movement_bird[2]), (3, 3))
                 self.bird.render(self.display, offset=render_scroll)
-
-            for projectile in self.projectiles.copy():
-                projectile[0][0] += projectile[1]
-                projectile[2] += 1
-                img = self.assets['projectile']
-                self.display.blit(img, (projectile[0][0] - img.get_width() / 2 - render_scroll[0],
-                                        projectile[0][1] - img.get_height() / 2 - render_scroll[1]))
-                if self.tilemap.solid_check(projectile[0]):
-                    self.projectiles.remove(projectile)
-                    for i in range(4):
-                        self.sparks.append(
-                            Spark(projectile[0], random.random() - 0.5 + (math.pi if projectile[1] > 0 else 0),
-                                  2 + random.random()))
-                elif projectile[2] > 360:
-                    self.projectiles.remove(projectile)
-                elif abs(self.player.dashing) < 50:
-                    if self.player.rect().collidepoint(projectile[0]):
-                        self.projectiles.remove(projectile)
-                        self.dead += 1
-                        self.sfx['hit'].play()
-                        self.screenshake = max(16, self.screenshake)
-                        for i in range(30):
-                            angle = random.random() * math.pi * 2
-                            speed = random.random() * 5
-                            self.sparks.append(Spark(self.player.rect().center, angle, 2 + random.random()))
-                            self.particles.append(Particles(self, 'particle', self.player.rect().center,
-                                                            velocity=[math.cos(angle + math.pi) * speed * 0.5,
-                                                                      math.sin(angle + math.pi) * speed],
-                                                            frame=random.randint(0, 7)))
 
             for spark in self.sparks.copy():
                 kill = spark.update()
@@ -340,7 +296,7 @@ class Game:
                                  text_input="QUIT", font=get_font(50), base_color="White", hovering_color="Yellow")
 
             for button in [PLAY_BUTTON, QUIT_BUTTON]:
-                button.changeColor(MENU_MOUSE_POS)
+                button.change_color(MENU_MOUSE_POS)
                 button.update(self.screen)
 
             for event in pygame.event.get():
@@ -348,11 +304,11 @@ class Game:
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    if PLAY_BUTTON.check_for_input(MENU_MOUSE_POS):
                         pygame.mixer.music.stop()
                         pygame.mixer.music.unload()
                         Game().run()
-                    if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    if QUIT_BUTTON.check_for_input(MENU_MOUSE_POS):
                         pygame.quit()
                         sys.exit()
 
@@ -375,7 +331,7 @@ class Game:
                                  text_input="QUIT", font=get_font(50), base_color="White", hovering_color="Yellow")
 
             for button in [REPLAY_BUTTON, QUIT_BUTTON]:
-                button.changeColor(MENU_MOUSE_POS)
+                button.change_color(MENU_MOUSE_POS)
                 button.update(self.screen)
 
             for event in pygame.event.get():
@@ -383,11 +339,11 @@ class Game:
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if REPLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    if REPLAY_BUTTON.check_for_input(MENU_MOUSE_POS):
                         pygame.mixer.music.stop()
                         pygame.mixer.music.unload()
                         Game().run()
-                    if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    if QUIT_BUTTON.check_for_input(MENU_MOUSE_POS):
                         pygame.quit()
                         sys.exit()
 
