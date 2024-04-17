@@ -247,6 +247,7 @@ class Game:
                         self.layout = not self.layout
                     if event.key == pygame.K_ESCAPE:
                         pygame.quit()
+                        sys.exit()
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT:
                         self.movement_bird[0] = False
